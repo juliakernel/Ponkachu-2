@@ -35,7 +35,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         row: number,
         col: number,
         path: Point[],
-        direction: Dir,
+        direction: Dir | null,
         turns: number
     };
 
@@ -44,14 +44,14 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         row: tile1.row,
         col: tile1.col,
         path: [{ row: tile1.row, col: tile1.col }],
-        direction: 'up',
+        direction: null,
         turns: 0
     }];
 
     while (queue.length > 0) {
         const { row, col, path, direction, turns } = queue.shift()!;
 
-        if (turns > 3) continue;
+        if (turns > 2) continue;
         if (row === tile2.row && col === tile2.col) {
             return { canConnect: true, path };
         }
@@ -59,7 +59,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         for (const { dRow, dCol, dir } of directions) {
             let newRow = row + dRow;
             let newCol = col + dCol;
-            let newTurns = direction !== dir ? turns + 1 : turns;
+            const newTurns = direction === null || direction === dir ? turns : turns + 1;
 
             while (
                 newRow >= 0 && newRow < H &&
@@ -67,7 +67,11 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
                 (board[newRow][newCol].isEmpty || (newRow === tile2.row && newCol === tile2.col))
             ) {
                 const key = `${newRow},${newCol},${dir},${newTurns}`;
-                if (visited.has(key)) break;
+                if (visited.has(key)) {
+                    newRow += dRow;
+                    newCol += dCol;
+                    continue;
+                }
                 visited.add(key);
 
                 queue.push({
