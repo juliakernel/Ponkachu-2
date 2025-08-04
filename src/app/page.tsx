@@ -24,6 +24,7 @@ export default function Home() {
     pauseGame,
     resumeGame,
     shuffleBoard,
+    updateTimer,
   } = useGameStore();
 
   const [showHint, setShowHint] = useState(false);
@@ -35,7 +36,7 @@ export default function Home() {
   // Initialize the game on component mount
   useEffect(() => {
     if (!gameStarted) {
-      initializeBoard(8, 8); // Start with 8x8 board for level 1
+      initializeBoard(10, 10); // Start with 10x10 board for level 1
       setGameStarted(true);
 
       // Start background music
@@ -45,6 +46,17 @@ export default function Home() {
       }, 1000); // Delay to allow user interaction
     }
   }, [initializeBoard, gameStarted]);
+
+  // Timer effect
+  useEffect(() => {
+    if (gameStatus === 'playing') {
+      const timer = setInterval(() => {
+        updateTimer();
+      }, 1000); // Update every second
+
+      return () => clearInterval(timer);
+    }
+  }, [gameStatus, updateTimer]);
 
   // Handle level completion and game completion
   useEffect(() => {
@@ -252,19 +264,6 @@ export default function Home() {
                 </div>
               </motion.div>
             )}
-
-            {/* Game Instructions - Compact */}
-            <motion.div
-              className="bg-white/90 backdrop-blur-sm rounded-lg p-3 shadow-sm max-w-xs"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8 }}
-            >
-              <div className="text-xs text-gray-600 text-center">
-                <div className="font-semibold mb-1">How to Play</div>
-                <div>Match tiles with max 1 turn • Clear all before time runs out</div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
 

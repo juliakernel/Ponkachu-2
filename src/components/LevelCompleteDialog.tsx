@@ -18,11 +18,11 @@ export default function LevelCompleteDialog({ isOpen, onClose }: LevelCompleteDi
 
     const getLevelConfig = (level: number) => {
         const configs = {
-            1: { timeLimit: 300, boardSize: 8, pieceTypes: 12 },
-            2: { timeLimit: 240, boardSize: 9, pieceTypes: 16 },
+            1: { timeLimit: 300, boardSize: 10, pieceTypes: 12 },
+            2: { timeLimit: 240, boardSize: 10, pieceTypes: 16 },
             3: { timeLimit: 180, boardSize: 10, pieceTypes: 20 },
             4: { timeLimit: 120, boardSize: 10, pieceTypes: 22 },
-            5: { timeLimit: 90, boardSize: 10, pieceTypes: 24 },
+            5: { timeLimit: 100, boardSize: 10, pieceTypes: 24 },
         };
         return configs[level as keyof typeof configs];
     };

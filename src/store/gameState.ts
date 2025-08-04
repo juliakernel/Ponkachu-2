@@ -42,8 +42,8 @@ export interface GameState {
 
 // Level configuration
 const LEVEL_CONFIG = {
-    1: { timeLimit: 300, boardSize: 8, pieceTypes: 12 }, // 5 minutes, 8x8, 12 types
-    2: { timeLimit: 240, boardSize: 9, pieceTypes: 16 }, // 4 minutes, 9x9, 16 types
+    1: { timeLimit: 300, boardSize: 10, pieceTypes: 12 }, // 5 minutes, 10x10, 12 types
+    2: { timeLimit: 240, boardSize: 10, pieceTypes: 16 }, // 4 minutes, 10x10, 16 types
     3: { timeLimit: 180, boardSize: 10, pieceTypes: 20 }, // 3 minutes, 10x10, 20 types
     4: { timeLimit: 120, boardSize: 10, pieceTypes: 22 }, // 2 minutes, 10x10, 22 types
     5: { timeLimit: 90, boardSize: 10, pieceTypes: 24 }, // 1.5 minutes, 10x10, 24 types
@@ -55,7 +55,7 @@ const generateRandomType = (level: number): number => {
     return Math.floor(Math.random() * maxTypes);
 };
 
-// Create a board with guaranteed pairs for specific level
+// Create a board with guaranteed pairs for specific level and border
 const createBoardWithPairs = (width: number, height: number, level: number): Tile[][] => {
     const totalCells = width * height;
     const types: number[] = [];
@@ -72,23 +72,42 @@ const createBoardWithPairs = (width: number, height: number, level: number): Til
         [types[i], types[j]] = [types[j], types[i]];
     }
 
-    // Create board with shuffled types
+    // Create extended board with border (width + 2, height + 2)
+    const extendedWidth = width + 2;
+    const extendedHeight = height + 2;
     const board: Tile[][] = [];
-    let typeIndex = 0;
 
-    for (let row = 0; row < height; row++) {
+    for (let row = 0; row < extendedHeight; row++) {
         board[row] = [];
-        for (let col = 0; col < width; col++) {
-            board[row][col] = {
-                id: `${row}-${col}`,
-                type: types[typeIndex],
-                row,
-                col,
-                isSelected: false,
-                isMatched: false,
-                isEmpty: false,
-            };
-            typeIndex++;
+        for (let col = 0; col < extendedWidth; col++) {
+            // Check if this is a border position
+            const isBorder = row === 0 || row === extendedHeight - 1 ||
+                col === 0 || col === extendedWidth - 1;
+
+            if (isBorder) {
+                // Border tile - always empty
+                board[row][col] = {
+                    id: `${row}-${col}`,
+                    type: 0,
+                    row,
+                    col,
+                    isSelected: false,
+                    isMatched: false,
+                    isEmpty: true, // Border tiles are always empty
+                };
+            } else {
+                // Regular tile
+                const typeIndex = (row - 1) * width + (col - 1);
+                board[row][col] = {
+                    id: `${row}-${col}`,
+                    type: types[typeIndex],
+                    row,
+                    col,
+                    isSelected: false,
+                    isMatched: false,
+                    isEmpty: false,
+                };
+            }
         }
     }
 
@@ -98,8 +117,8 @@ const createBoardWithPairs = (width: number, height: number, level: number): Til
 export const useGameStore = create<GameState>((set, get) => ({
     // Initial state
     board: [],
-    boardWidth: 8,
-    boardHeight: 8,
+    boardWidth: 10,
+    boardHeight: 10,
     selectedTiles: [],
     score: 0,
     timeLeft: 300, // 5 minutes
@@ -115,8 +134,8 @@ export const useGameStore = create<GameState>((set, get) => ({
         const board = createBoardWithPairs(width, height, level);
         set({
             board,
-            boardWidth: width,
-            boardHeight: height,
+            boardWidth: width + 2, // Add border width
+            boardHeight: height + 2, // Add border height
             selectedTiles: [],
             score: 0,
             timeLeft: config.timeLimit,
@@ -256,8 +275,9 @@ export const useGameStore = create<GameState>((set, get) => ({
     updateTimer: () => {
         const { timeLeft, gameStatus } = get();
         if (gameStatus === 'playing' && timeLeft > 0) {
-            set({ timeLeft: timeLeft - 1 });
-            if (timeLeft - 1 <= 0) {
+            const newTimeLeft = timeLeft - 1;
+            set({ timeLeft: newTimeLeft });
+            if (newTimeLeft <= 0) {
                 set({ gameStatus: 'lost' });
                 soundManager.playTimeUp();
             }

@@ -11,7 +11,7 @@ export interface PathCheckResult {
 }
 
 /**
- * Main function: Use BFS with turn-counting to find valid path between two tiles (max 3 segments = 2 turns)
+ * Main function: Use BFS with turn-counting to find valid path between two tiles (max 4 segments = 3 turns)
  */
 export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): PathCheckResult => {
     if (
@@ -51,7 +51,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
     while (queue.length > 0) {
         const { row, col, path, direction, turns } = queue.shift()!;
 
-        if (turns > 2) continue;
+        if (turns > 3) continue;
         if (row === tile2.row && col === tile2.col) {
             return { canConnect: true, path };
         }
