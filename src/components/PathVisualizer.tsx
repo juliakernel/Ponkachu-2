@@ -22,7 +22,7 @@ export default function PathVisualizer({ selectedTiles, board, boardWidth, board
         y: boardPadding + tile.row * (tileSize + gap)
     });
 
-    const segments = result.path.slice(1).map((p, i) => [result.path[i], p]);
+    const segments = result.path!.slice(1).map((p, i) => [result.path![i], p]);
     const boardWidthPx = boardWidth * (tileSize + gap) - gap + boardPadding * 2;
     const boardHeightPx = boardHeight * (tileSize + gap) - gap + boardPadding * 2;
 

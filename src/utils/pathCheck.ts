@@ -35,7 +35,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         row: number,
         col: number,
         path: Point[],
-        direction: Dir | null,
+        direction: Dir,
         turns: number
     };
 
@@ -44,7 +44,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         row: tile1.row,
         col: tile1.col,
         path: [{ row: tile1.row, col: tile1.col }],
-        direction: null,
+        direction: 'up',
         turns: 0
     }];
 
@@ -59,7 +59,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
         for (const { dRow, dCol, dir } of directions) {
             let newRow = row + dRow;
             let newCol = col + dCol;
-            let newTurns = direction && direction !== dir ? turns + 1 : turns;
+            let newTurns = direction !== dir ? turns + 1 : turns;
 
             while (
                 newRow >= 0 && newRow < H &&
@@ -74,7 +74,7 @@ export const canConnectTiles = (board: Tile[][], tile1: Tile, tile2: Tile): Path
                     row: newRow,
                     col: newCol,
                     path: [...path, { row: newRow, col: newCol }],
-                    direction: dir,
+                    direction: dir as Dir,
                     turns: newTurns
                 });
 
