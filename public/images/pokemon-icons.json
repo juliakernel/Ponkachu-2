@@ -1,0 +1,60 @@
+{
+  "pokemon": [
+    {
+      "id": 0,
+      "name": "Electric",
+      "emoji": "⚡",
+      "color": "#F59E0B",
+      "description": "Electric-type Pokemon like Pikachu"
+    },
+    {
+      "id": 1,
+      "name": "Fire",
+      "emoji": "🔥",
+      "color": "#EF4444",
+      "description": "Fire-type Pokemon like Charmander"
+    },
+    {
+      "id": 2,
+      "name": "Water",
+      "emoji": "💧",
+      "color": "#3B82F6",
+      "description": "Water-type Pokemon like Squirtle"
+    },
+    {
+      "id": 3,
+      "name": "Grass",
+      "emoji": "🌿",
+      "color": "#10B981",
+      "description": "Grass-type Pokemon like Bulbasaur"
+    },
+    {
+      "id": 4,
+      "name": "Psychic",
+      "emoji": "🌟",
+      "color": "#8B5CF6",
+      "description": "Psychic-type Pokemon like Alakazam"
+    },
+    {
+      "id": 5,
+      "name": "Ghost",
+      "emoji": "👻",
+      "color": "#6B7280",
+      "description": "Ghost-type Pokemon like Gengar"
+    },
+    {
+      "id": 6,
+      "name": "Ice",
+      "emoji": "❄️",
+      "color": "#06B6D4",
+      "description": "Ice-type Pokemon like Articuno"
+    },
+    {
+      "id": 7,
+      "name": "Dragon",
+      "emoji": "🐉",
+      "color": "#4F46E5",
+      "description": "Dragon-type Pokemon like Dragonite"
+    }
+  ]
+}
