@@ -286,14 +286,14 @@ export const useGameStore = create<GameState>((set, get) => ({
 
     // Reset game
     resetGame: () => {
-        const { boardWidth, boardHeight } = get();
         set({
             level: 1,
             totalScore: 0,
             isGameCompleted: false,
             gameStatus: 'playing'
         });
-        get().initializeBoard(boardWidth, boardHeight);
+        // Always start with base board size (10x10), border will be added in initializeBoard
+        get().initializeBoard(10, 10);
     },
 
     // Next level
