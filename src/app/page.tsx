@@ -268,9 +268,9 @@ export default function Home() {
         </div>
 
         {/* Right Panel - Leaderboard */}
-        <div className="w-72 p-4">
+        {/* <div className="w-72 p-4">
           <Leaderboard />
-        </div>
+        </div> */}
       </div>
 
       {/* Level Complete Dialog */}
