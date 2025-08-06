@@ -42,11 +42,11 @@ export interface GameState {
 
 // Level configuration
 const LEVEL_CONFIG = {
-    1: { timeLimit: 300, boardSize: 10, pieceTypes: 12 }, // 5 minutes, 10x10, 12 types
-    2: { timeLimit: 240, boardSize: 10, pieceTypes: 16 }, // 4 minutes, 10x10, 16 types
-    3: { timeLimit: 180, boardSize: 10, pieceTypes: 20 }, // 3 minutes, 10x10, 20 types
-    4: { timeLimit: 120, boardSize: 10, pieceTypes: 22 }, // 2 minutes, 10x10, 22 types
-    5: { timeLimit: 90, boardSize: 10, pieceTypes: 24 }, // 1.5 minutes, 10x10, 24 types
+    1: { timeLimit: 300, boardSize: 8, pieceTypes: 12 }, // 5 minutes, 8x8, 12 types
+    2: { timeLimit: 240, boardSize: 8, pieceTypes: 16 }, // 4 minutes, 8x8, 16 types
+    3: { timeLimit: 180, boardSize: 8, pieceTypes: 20 }, // 3 minutes, 8x8, 20 types
+    4: { timeLimit: 120, boardSize: 8, pieceTypes: 22 }, // 2 minutes, 8x8, 22 types
+    5: { timeLimit: 90, boardSize: 8, pieceTypes: 24 }, // 1.5 minutes, 8x8, 24 types
 };
 
 // Generate random piece types for tiles based on level
@@ -117,8 +117,8 @@ const createBoardWithPairs = (width: number, height: number, level: number): Til
 export const useGameStore = create<GameState>((set, get) => ({
     // Initial state
     board: [],
-    boardWidth: 10,
-    boardHeight: 10,
+    boardWidth: 8,
+    boardHeight: 8,
     selectedTiles: [],
     score: 0,
     timeLeft: 300, // 5 minutes
@@ -292,8 +292,8 @@ export const useGameStore = create<GameState>((set, get) => ({
             isGameCompleted: false,
             gameStatus: 'playing'
         });
-        // Always start with base board size (10x10), border will be added in initializeBoard
-        get().initializeBoard(10, 10);
+        // Always start with base board size (8x8), border will be added in initializeBoard
+        get().initializeBoard(8, 8);
     },
 
     // Next level

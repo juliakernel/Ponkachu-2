@@ -36,7 +36,7 @@ export default function Home() {
   // Initialize the game on component mount
   useEffect(() => {
     if (!gameStarted) {
-      initializeBoard(10, 10); // Start with 10x10 board for level 1
+      initializeBoard(8, 8); // Start with 8x8 board for level 1
       setGameStarted(true);
 
       // Start background music
@@ -202,7 +202,7 @@ export default function Home() {
                 🔄
               </motion.button>
 
-              <motion.button
+              {/* <motion.button
                 onClick={handleHint}
                 disabled={gameStatus !== 'playing'}
                 className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -210,10 +210,10 @@ export default function Home() {
                 whileTap={{ scale: 0.95 }}
               >
                 💡
-              </motion.button>
+              </motion.button> */}
 
               {/* Debug Win Button */}
-              <motion.button
+              {/* <motion.button
                 onClick={handleDebugWin}
                 disabled={gameStatus === 'won' || gameStatus === 'lost'}
                 className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -222,10 +222,10 @@ export default function Home() {
                 title="Debug: Simulate Win Game"
               >
                 🏆
-              </motion.button>
+              </motion.button> */}
 
               {/* Sound Controls */}
-              <SoundControls />
+              {/* <SoundControls /> */}
             </div>
           </div>
         </div>
