@@ -114,22 +114,6 @@ export default function GameBoard({ onMatch, onNoValidMoves }: GameBoardProps) {
         ));
     };
 
-    if (board.length === 0) {
-        return (
-            <div className="flex items-center justify-center h-96 bg-gray-100 rounded-lg">
-                <div className="text-center">
-                    <div className="text-4xl mb-4">⚡</div>
-                    <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                        Welcome to Pikachu Connect!
-                    </h3>
-                    <p className="text-gray-500">
-                        Start a new game to begin playing
-                    </p>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="flex flex-col items-center space-y-4">
             {/* Game Board */}

@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 import GameBoard from '../components/GameBoard';
 import GameCompletionDialog from '../components/GameCompletionDialog';
 import LevelCompleteDialog from '../components/LevelCompleteDialog';
-import StatsPanel from '../components/StatsPanel';
 import { useGameStore } from '../store/gameState';
 import { getHint } from '../utils/shuffle';
 import soundManager from '../utils/soundManager';
@@ -17,6 +16,7 @@ export default function Home() {
     timeLeft,
     score,
     level,
+    totalScore,
     initializeBoard,
     resetGame,
     pauseGame,
@@ -100,184 +100,169 @@ export default function Home() {
   };
 
   const handleMatchFound = () => {
-    // Additional effects when a match is found
-    setShowHint(false);
-    setHintTiles(null);
+    // Handle successful match
   };
 
   const handleNoValidMoves = () => {
-    // Show notification when no valid moves are available
-    console.log('No valid moves available - auto shuffle will occur');
+    // Handle no valid moves
   };
 
-  // Debug function to simulate win game
   const handleDebugWin = () => {
-    const { board, score } = useGameStore.getState();
+    // Simulate winning the game
+    console.log('Debug: Simulating win');
+  };
 
-    // Clear all tiles by setting them to empty
-    const clearedBoard = board.map(row =>
-      row.map(tile => ({
-        ...tile,
-        isMatched: true,
-        isEmpty: true,
-        isSelected: false
-      }))
-    );
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
 
-    // Update game state to won
-    useGameStore.setState({
-      board: clearedBoard,
-      gameStatus: 'won',
-      score: score + 500, // Add bonus points for winning
-      selectedTiles: []
-    });
+  const getStatusIcon = () => {
+    switch (gameStatus) {
+      case 'playing': return '⚡';
+      case 'paused': return '⏸️';
+      case 'won': return '🏆';
+      case 'lost': return '💀';
+      default: return '❓';
+    }
+  };
 
-    console.log('🎉 Debug: Game won!');
+  const getStatusColor = () => {
+    switch (gameStatus) {
+      case 'playing': return 'bg-green-100 text-green-800';
+      case 'paused': return 'bg-yellow-100 text-yellow-800';
+      case 'won': return 'bg-blue-100 text-blue-800';
+      case 'lost': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
     <div
-      className="h-screen overflow-hidden relative"
+      className="min-h-screen bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: 'url(/images/background.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
       }}
     >
-      {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-[1px]"></div>
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black/20" />
 
-      {/* Header - Fixed at top */}
-      <motion.header
-        className="relative z-10 bg-white/30 backdrop-blur-sm shadow-sm h-16 flex items-center"
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="px-4">
-          <div className="flex">
-            {/* Logo and Title */}
-            {/* <motion.div
-              className="flex items-center space-x-3"
-              whileHover={{ scale: 1.05 }}
-            >
-              <div>
-                <h1 className="text-xl font-bold text-white">
-                  Ponkachu
-                </h1>
+      {/* Main content */}
+      <div className="relative z-10 h-screen flex flex-col">
+        {/* Header/Navbar */}
+        <motion.header
+          className="bg-white/80 backdrop-blur-md border-b border-white/30"
+          initial={{ y: -100 }}
+          animate={{ y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="px-4">
+            <div className="flex items-center justify-between py-3">
+              {/* Game Status */}
+              <div className="flex items-center space-x-4">
+                <motion.div
+                  className={`text-sm font-semibold px-3 py-1.5 rounded-full ${getStatusColor()} flex items-center space-x-2`}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <span className="text-base">{getStatusIcon()}</span>
+                  <span>
+                    {gameStatus === 'playing' ? 'Playing' :
+                      gameStatus === 'paused' ? 'Paused' :
+                        gameStatus === 'won' ? 'Victory!' :
+                          'Game Over'}
+                  </span>
+                </motion.div>
               </div>
-            </motion.div> */}
 
-            {/* Game Controls */}
-            <div className="flex gap-2">
-              <motion.button
-                onClick={handleNewGame}
-                className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                🎮
-              </motion.button>
+              {/* Game Stats */}
+              <div className="flex items-center space-x-6">
+                {/* Timer */}
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">Time</div>
+                  <div className={`text-lg font-bold ${timeLeft <= 30 ? 'text-red-600' :
+                    timeLeft <= 60 ? 'text-yellow-600' :
+                      'text-gray-800'
+                    }`}>
+                    {formatTime(timeLeft)}
+                  </div>
+                </div>
 
-              <motion.button
-                onClick={handlePauseResume}
-                disabled={gameStatus === 'won' || gameStatus === 'lost'}
-                className="px-3 py-1.5 bg-yellow-500 text-white rounded-lg text-sm font-medium hover:bg-yellow-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                {gameStatus === 'playing' ? '⏸️' : '▶️'}
-              </motion.button>
+                {/* Score */}
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">Score</div>
+                  <div className="text-lg font-bold text-green-600">
+                    {score.toLocaleString()}
+                  </div>
+                </div>
 
-              <motion.button
-                onClick={handleShuffle}
-                disabled={gameStatus !== 'playing'}
-                className="px-3 py-1.5 bg-purple-500 text-white rounded-lg text-sm font-medium hover:bg-purple-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                🔄
-              </motion.button>
+                {/* Level */}
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">Level</div>
+                  <div className="text-lg font-bold text-purple-600">
+                    {level}/5
+                  </div>
+                </div>
 
-              {/* <motion.button
-                onClick={handleHint}
-                disabled={gameStatus !== 'playing'}
-                className="px-3 py-1.5 bg-green-500 text-white rounded-lg text-sm font-medium hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                💡
-              </motion.button> */}
+                {/* Total Score */}
+                <div className="text-center">
+                  <div className="text-xs text-gray-600 mb-1">Total</div>
+                  <div className="text-lg font-bold text-orange-600">
+                    {totalScore.toLocaleString()}
+                  </div>
+                </div>
+              </div>
 
-              {/* Debug Win Button */}
-              {/* <motion.button
-                onClick={handleDebugWin}
-                disabled={gameStatus === 'won' || gameStatus === 'lost'}
-                className="px-3 py-1.5 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                title="Debug: Simulate Win Game"
-              >
-                🏆
-              </motion.button> */}
+              {/* Game Controls */}
+              <div className="flex gap-2">
+                <motion.button
+                  onClick={handleNewGame}
+                  className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  New Game
+                </motion.button>
 
-              {/* Sound Controls */}
-              {/* <SoundControls /> */}
+                <motion.button
+                  onClick={handlePauseResume}
+                  className="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {gameStatus === 'playing' ? 'Pause' : 'Resume'}
+                </motion.button>
+
+                <motion.button
+                  onClick={handleShuffle}
+                  className="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-colors"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Shuffle
+                </motion.button>
+              </div>
             </div>
           </div>
-        </div>
-      </motion.header>
+        </motion.header>
 
-      {/* Main Game Area - Full height minus header */}
-      <div className="relative z-10 h-[calc(100vh-4rem)] flex">
-        {/* Left Panel - Stats */}
-        <div className="w-64 p-4">
-          <StatsPanel />
-        </div>
-
-        {/* Center - Game Board */}
+        {/* Main Game Area */}
         <div className="flex-1 flex items-center justify-center p-4">
-          <motion.div
-            className="flex flex-col items-center space-y-4"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
+          <div className="w-full max-w-4xl">
             <GameBoard
               onMatch={handleMatchFound}
               onNoValidMoves={handleNoValidMoves}
             />
-
-            {/* Hint Display */}
-            {showHint && hintTiles && (
-              <motion.div
-                className="bg-green-100 border border-green-300 rounded-lg p-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <div className="text-green-800 text-xs font-medium text-center">
-                  💡 Hint: ({hintTiles.tile1.row + 1}, {hintTiles.tile1.col + 1}) → ({hintTiles.tile2.row + 1}, {hintTiles.tile2.col + 1})
-                </div>
-              </motion.div>
-            )}
-          </motion.div>
+          </div>
         </div>
-
-        {/* Right Panel - Leaderboard */}
-        {/* <div className="w-72 p-4">
-          <Leaderboard />
-        </div> */}
       </div>
 
-      {/* Level Complete Dialog */}
+      {/* Dialogs */}
       <LevelCompleteDialog
         isOpen={showLevelComplete}
         onClose={() => setShowLevelComplete(false)}
       />
-
-      {/* Game Completion Dialog */}
       <GameCompletionDialog
         isOpen={showGameCompletion}
         onClose={() => setShowGameCompletion(false)}
