@@ -52,7 +52,7 @@ export default function StatsPanel() {
             >
                 <div className="space-y-4">
                     {/* Game Status Button */}
-                    <div className="text-center">
+                    {/* <div className="text-center">
                         <motion.button
                             className={`text-sm font-semibold px-4 py-2 rounded-full ${getStatusColor()} hover:scale-105 transition-all duration-200 flex items-center justify-center space-x-2 w-full`}
                             onClick={() => setShowStatusDialog(true)}
@@ -67,7 +67,7 @@ export default function StatsPanel() {
                                             'Game Over'}
                             </span>
                         </motion.button>
-                    </div>
+                    </div> */}
 
                     {/* Timer */}
                     <div className="text-center">

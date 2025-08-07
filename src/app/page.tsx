@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useGameStore } from '../store/gameState';
+import { useEffect, useState } from 'react';
 import GameBoard from '../components/GameBoard';
-import StatsPanel from '../components/StatsPanel';
-import Leaderboard from '../components/Leaderboard';
-import { getHint } from '../utils/shuffle';
-import SoundControls from '../components/SoundControls';
-import soundManager from '../utils/soundManager';
-import LevelCompleteDialog from '../components/LevelCompleteDialog';
 import GameCompletionDialog from '../components/GameCompletionDialog';
+import LevelCompleteDialog from '../components/LevelCompleteDialog';
+import StatsPanel from '../components/StatsPanel';
+import { useGameStore } from '../store/gameState';
+import { getHint } from '../utils/shuffle';
+import soundManager from '../utils/soundManager';
 
 export default function Home() {
   const {
@@ -157,10 +155,10 @@ export default function Home() {
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between">
+        <div className="px-4">
+          <div className="flex">
             {/* Logo and Title */}
-            <motion.div
+            {/* <motion.div
               className="flex items-center space-x-3"
               whileHover={{ scale: 1.05 }}
             >
@@ -169,10 +167,10 @@ export default function Home() {
                   Ponkachu
                 </h1>
               </div>
-            </motion.div>
+            </motion.div> */}
 
             {/* Game Controls */}
-            <div className="flex items-center gap-2">
+            <div className="flex gap-2">
               <motion.button
                 onClick={handleNewGame}
                 className="px-3 py-1.5 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
